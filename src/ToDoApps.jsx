@@ -13,19 +13,47 @@ export default function ToDoApps(){
           return [...prevTasks,{tasks:taskText,id:uuidv4(),status:false}]
        });
   }
-   let taskUpdate = (id) => {
-        // 1. Find the task to move
-        const doneTask = tasks.find((task) => task.id === id);
+   let taskMovedToDone = (id) => {
+      // 1. Update status to true (so tick shows)
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === id ? { ...task, status: true } : task
+        )
+      );
 
-        // 2. Add it into taskDone list
-        setTaskDone((prev) => [...prev, { ...doneTask, status: true }]);
+      // 2. After a short delay, move it to done list
+      setTimeout(() => {
+          const doneTask = tasks.find((task) => task.id === id);
+          if (!doneTask) return;
+
+          setTaskDone((prev) => [...prev, { ...doneTask, status: true }]);
+          setTasks((prev) => prev.filter((task) => task.id !== id));
+           }, 150); // adjust timing to match checkbox animation
+    };
+    let taskMovedToPending = (id) => {
+        // Update status to false
+        setTaskDone((prev)=>
+          prev.map((task)=>
+            task.id=== id ? {...task, status:false }:task
+            )
+        )
+        setTimeout(()=>{
+          // 1. Find the task to move
+        const pendingTask = taskDone.find((task) => task.id === id);
+         if (!pendingTask) return;
+
+        // 2. Add it into tasks list
+        setTasks((prev) => [...prev, { ...pendingTask, status: false }]);
 
         // 3. Remove it from tasks
-        setTasks(tasks.filter((task) => task.id !== id));
-
-        console.log('finished task',taskDone);
-        console.log('todo-task',tasks);
+        
+        setTaskDone(taskDone.filter((task) => task.id !== id));
+        console.log("pending task",tasks);
+        },150)
+        
     };
+
+
     let tasksDoneDeleted=(id)=>{
       setTaskDone(taskDone.filter((el)=>el.id != id));
     };
@@ -40,11 +68,12 @@ export default function ToDoApps(){
         bgcolor:"#bbdefb",
         display:"flex",
         flexDirection:"column",
+        width:"auto"
            }}>
         <Header/>
         <TaskInput addTask={addTask}/>
-        <TaskList tasks={tasks} taskUpdate={taskUpdate} tasksDeleted={tasksDeleted}/>
-        <TaskDone finishedTask={taskDone} tasksDoneDeleted={tasksDoneDeleted}/>
+        <TaskList tasks={tasks} taskMovedToDone={taskMovedToDone} tasksDeleted={tasksDeleted}/>
+        <TaskDone finishedTask={taskDone} taskMovedToPending={taskMovedToPending} tasksDoneDeleted={tasksDoneDeleted}/>
      </Box>
     )
 }

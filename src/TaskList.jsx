@@ -18,7 +18,7 @@ import {
 // import Paper from '@mui/material/Paper';
 // import { styled } from '@mui/material/styles';
 // import { Box } from '@mui/material';
-export default function TaskList({tasks,taskUpdate,tasksDeleted}){
+export default function TaskList({tasks,taskMovedToDone,tasksDeleted}){
     return (
   
   //         {/* {tasks.length > 0 && (  only show button if tasks exist
@@ -54,11 +54,12 @@ export default function TaskList({tasks,taskUpdate,tasksDeleted}){
             >
               <ListItemIcon sx={{minWidth:40}}>
                 <Checkbox
+                  checked={el.status} 
                   edge="start"
                   sx={{
                     "& .MuiSvgIcon-root": { fontSize: 22 }, // checkbox size
                   }}
-                  onChange={()=>taskUpdate(el.id)}
+                  onChange={()=>taskMovedToDone(el.id)}
                 />
               </ListItemIcon>
 

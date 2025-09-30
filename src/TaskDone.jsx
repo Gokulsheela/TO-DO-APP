@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
-export default function TaskDone({finishedTask,tasksDoneDeleted}){
+export default function TaskDone({finishedTask,tasksDoneDeleted,taskMovedToPending}){
     return (
        <Box sx={{ p: 2, maxWidth: 520 }}>
         <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
@@ -39,7 +39,8 @@ export default function TaskDone({finishedTask,tasksDoneDeleted}){
                   sx={{
                     "& .MuiSvgIcon-root": { fontSize: 22 }, // checkbox size
                   }}
-                  onChange={""}
+                 defaultChecked
+                  onChange={()=>taskMovedToPending(el.id)}
                 />
               </ListItemIcon>
              <ListItemText primary={el.tasks}/>
