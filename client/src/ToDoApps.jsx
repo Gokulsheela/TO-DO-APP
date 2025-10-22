@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "./Heder"
+import Header from "./Header"
 import {v4 as uuidv4 } from 'uuid';
 import TaskList from "./TaskList";
 import TaskDone from "./TaskDone";
@@ -74,7 +74,7 @@ export default function ToDoApps(){
     let tasksDoneDeleted=(id)=>{
       console.log(id,"id");
       axios.delete(`http://localhost:3030/todos/${id}`);
-      setTaskDone(tasks.filter((el)=>el.id != id));
+      setTaskDone(taskDone.filter((el)=>el.id != id));
     };
 
     return (
