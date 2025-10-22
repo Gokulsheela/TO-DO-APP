@@ -1,0 +1,48 @@
+.todoapp{
+  display:flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  text-align: center;
+  justify-content:flex-start;
+  margin: auto;
+}
+
+
+.toDoInput{
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+} 
+.toDoInput button{
+  height: 2rem;
+  margin: 10px 0; 
+}
+.tasks {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-start; */
+  align-items: center;  /*center the list as a whole*/
+  margin-top: 20px;
+}
+
+.tasks li {
+  list-style: none;
+  display: flex;             /* make each row a flex container */
+  align-items: center;       /* vertically center text & buttons */
+  justify-content: space-between; 
+
+ width: 300px;                /*fixed width for alignment, adjust as needed */
+  margin: 8px 0;              /*spacing between tasks */
+  padding: 6px 10px;
+  border-bottom: 1px solid #ddd;   /*optional: a divider */
+}
+
+.tasks li span {
+  flex: 1;  /* let the task text take available space */
+  text-align: left;
+}
+
+.tasks li button {
+  margin-left: 10px; /* spacing between buttons */
+  cursor: pointer;
+}
