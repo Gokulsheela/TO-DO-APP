@@ -13,7 +13,9 @@ export default function ToDoApps(){
   let [taskDone,setTaskDone]=useState([]);
 
   useEffect(()=>{
-    axios.get("http://localhost:3030/todos").then((res)=>setTasks(res.data));
+    axios.get("http://localhost:3030/todos").then((res)=>{
+      setTaskDone(res.data.filter((el)=>el.status===true));
+      setTasks(res.data.filter((el)=>el.status===false));});
   },[]);
 
   let addTask=async (text)=>{
@@ -24,9 +26,10 @@ export default function ToDoApps(){
       //  console.log(tasks)
   }
   //-------------------------------------------------------------------------------
-   let taskMovedToDone = (id) => {
+   let taskMovedToDone = async(id) => {
       // 1. Update status to true (so tick shows)
-
+      console.log(id);
+     await axios.patch(`http://localhost:3030/todos`,{id});
       setTasks((prev) =>
         prev.map((task) =>
           task.id === id ? { ...task, status: true } : task
@@ -37,13 +40,16 @@ export default function ToDoApps(){
       setTimeout(() => {
           const doneTask = tasks.find((task) => task.id === id);
           if (!doneTask) return;
-
           setTaskDone((prev) => [...prev, { ...doneTask, status: true }]);
           setTasks((prev) => prev.filter((task) => task.id !== id));
            }, 150); // adjust timing to match checkbox animation
+           console.log(taskDone)
     };
-    let taskMovedToPending = (id) => {
+
+
+    let taskMovedToPending = async(id) => {
         // Update status to false
+        await axios.patch(`http://localhost:3030/todos`,{id});
         setTaskDone((prev)=>
           prev.map((task)=>
             task.id=== id ? {...task, status:false }:task

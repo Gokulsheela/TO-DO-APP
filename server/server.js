@@ -27,12 +27,24 @@ app.get("/todos", async (req,res)=>{
 
 app.post("/todos", async (req,res)=>{
     const newTodo= new tasks({task:req.body.text});
-     console.log(newTodo);
     await newTodo.save();
     res.json(newTodo);
 })
+app.patch("/todos",async(req,res)=>{
+    const {id}=req.body;
+ const result=  await tasks.findOneAndUpdate(
+      {id},
+      [
+        { $set: { status: { $not: "$status" } } }
+      ],
+      {new:true});
+    // if (!result) return res.status(404).json({ message: "Task not found" });
+    res.json({ message: "Status toggled"})
+ 
+})
 app.delete("/todos/:id", async(req,res)=>{
     const {id}= req.params; // reciving from url
+    console.log(id);
      const resDlt=await tasks.findOneAndDelete({ id: id });
     res.json(resDlt);
 
