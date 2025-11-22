@@ -1,87 +1,19 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Header from "./Header"
-import {v4 as uuidv4 } from 'uuid';
 import TaskList from "./TaskList";
 import TaskDone from "./TaskDone";
 import TaskInput from "./TaskInput";
 import {Box} from "@mui/material";
+import { useDispatch } from 'react-redux';
+import { fetchTodosAsync } from './features/todo/todoSlice';
 
 export default function ToDoApps(){
-  
-  let [tasks,setTasks]=useState([{tasks:"sample"}]); //intialize a empty string prevent from creating
-  let [taskDone,setTaskDone]=useState([]);
+  const dispatch = useDispatch();
 
   useEffect(()=>{
-    axios.get("http://localhost:3030/todos").then((res)=>{
-      setTaskDone(res.data.filter((el)=>el.status===true));
-      setTasks(res.data.filter((el)=>el.status===false));});
+    console.log("useffect1");
+    dispatch(fetchTodosAsync());
   },[]);
-
-  let addTask=async (text)=>{
-   let res= await axios.post("http://localhost:3030/todos",{text});
-       setTasks( (prevTasks) => {
-                 return [...prevTasks,res.data]
-                 });
-      //  console.log(tasks)
-  }
-  //-------------------------------------------------------------------------------
-   let taskMovedToDone = async(id) => {
-      // 1. Update status to true (so tick shows)
-      console.log(id);
-     await axios.patch(`http://localhost:3030/todos`,{id});
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === id ? { ...task, status: true } : task
-        )
-      );
-
-      // 2. After a short delay, move it to done list
-      setTimeout(() => {
-          const doneTask = tasks.find((task) => task.id === id);
-          if (!doneTask) return;
-          setTaskDone((prev) => [...prev, { ...doneTask, status: true }]);
-          setTasks((prev) => prev.filter((task) => task.id !== id));
-           }, 150); // adjust timing to match checkbox animation
-           console.log(taskDone)
-    };
-
-
-    let taskMovedToPending = async(id) => {
-        // Update status to false
-        await axios.patch(`http://localhost:3030/todos`,{id});
-        setTaskDone((prev)=>
-          prev.map((task)=>
-            task.id=== id ? {...task, status:false }:task
-            )
-        )
-        setTimeout(()=>{
-          // 1. Find the task to move
-        const pendingTask = taskDone.find((task) => task.id === id);
-         if (!pendingTask) return;
-
-        // 2. Add it into tasks list
-        setTasks((prev) => [...prev, { ...pendingTask, status: false }]);
-
-        // 3. Remove it from tasks
-        
-        setTaskDone(taskDone.filter((task) => task.id !== id));
-        },150)
-        
-    };
-//-----------------------------------------------------------------------------
-
-    let tasksDeleted=(id)=>{
-     axios.delete(`http://localhost:3030/todos/${id}`);
-     setTasks(tasks.filter((el)=>el.id != id));
-    };
-
-
-    let tasksDoneDeleted=(id)=>{
-      console.log(id,"id");
-      axios.delete(`http://localhost:3030/todos/${id}`);
-      setTaskDone(taskDone.filter((el)=>el.id != id));
-    };
 
     return (
       <Box  sx={{ 
@@ -93,10 +25,11 @@ export default function ToDoApps(){
         width:"auto"
            }}>
         <Header/>
-        <TaskInput addTask={addTask}/>
+        {/* <TaskInput addTask={addTask}/> */}
+         <TaskInput/>
         
-        <TaskList  tasks={tasks} taskMovedToDone={taskMovedToDone} tasksDeleted={tasksDeleted}/>
-        <TaskDone  finishedTask={taskDone} taskMovedToPending={taskMovedToPending} tasksDoneDeleted={tasksDoneDeleted}/>
+        <TaskList/>
+        <TaskDone />
      </Box>
     )
 }

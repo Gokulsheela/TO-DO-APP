@@ -10,8 +10,25 @@ import {
   Checkbox,
   Typography,
 } from "@mui/material";
+
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux'
 import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteTodoAsync, updateTodosAsync } from './features/todo/todoSlice';
 export default function TaskDone({finishedTask,tasksDoneDeleted,taskMovedToPending}){
+
+    const todos = useSelector((state) => state.todos);
+  const dispatch = useDispatch();
+
+  const clickHandler = (id) => {
+        dispatch(deleteTodoAsync(id));
+      }
+  
+  const todoMovedToPending = (id) => {
+    console.log(id);
+    dispatch(updateTodosAsync(id));
+  }
+
     return (
        <Box sx={{ p: 2, maxWidth:1000 }}>
         <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
@@ -19,7 +36,9 @@ export default function TaskDone({finishedTask,tasksDoneDeleted,taskMovedToPendi
           Completed <Typography component="span" color="text.secondary"></Typography>
         </Typography>
         <List>
-            {finishedTask.map((el)=>(
+            { todos
+            .filter((el) => el.status === true)
+            .map((el, index) => (
             <ListItem
                  key={el.id}
               disableGutters
@@ -40,12 +59,12 @@ export default function TaskDone({finishedTask,tasksDoneDeleted,taskMovedToPendi
                     "& .MuiSvgIcon-root": { fontSize: 22 }, // checkbox size
                   }}
                  defaultChecked
-                  onChange={()=>taskMovedToPending(el.id)}
+                  onChange={()=>todoMovedToPending(el.id)}
                 />
               </ListItemIcon>
              <ListItemText primary={el.task}/>
              <ListItemIcon sx={{minWidth:40}}>
-                  <IconButton onClick={()=>tasksDoneDeleted(el.id)} aria-label="delete"><DeleteIcon /></IconButton>
+                  <IconButton onClick={()=>clickHandler(el.id)} aria-label="delete"><DeleteIcon /></IconButton>
               </ListItemIcon>    
              
           </ListItem>

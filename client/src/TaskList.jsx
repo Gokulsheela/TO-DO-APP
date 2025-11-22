@@ -9,8 +9,23 @@ import {
   Checkbox,
   Typography,
 } from "@mui/material";
- import DeleteIcon from '@mui/icons-material/Delete';
-export default function TaskList({tasks,taskMovedToDone,tasksDeleted}){
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux'
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteTodoAsync, updateTodosAsync } from './features/todo/todoSlice';
+
+export default function TaskList(){
+  const todos = useSelector((state) => state.todos);
+  const dispatch = useDispatch();
+
+  const clickHandler = (id) => {
+        dispatch(deleteTodoAsync(id));
+      }
+  
+  const taskMovedToDone = (id) => {
+    console.log(id);
+    dispatch(updateTodosAsync(id));
+  }
     return (
   
   //         {/* {tasks.length > 0 && (  only show button if tasks exist
@@ -24,16 +39,18 @@ export default function TaskList({tasks,taskMovedToDone,tasksDeleted}){
   //   </Paper>
 
 
-    <Box sx={{ p: 2, maxWidth: 1000,}}>
+    <Box sx={{ p: 2, maxWidth: 1000 }}>
       <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
           Pending <Typography component="span" color="text.secondary"></Typography>
         </Typography>
         <List>
-          {tasks.map((el,index)=> (
-         <ListItem key={el.id||index}
-              sx={{
-                mb: 1.25,                         // gap between rows
+          {todos
+            .filter((el) => el.status === false)
+            .map((el, index) => (
+              <ListItem key={el.id || index}
+                sx={{
+                  mb: 1.25,                         // gap between rows
                 bgcolor: "background.paper",     // white card color
                 borderRadius: 2,                 // rounded pill look
                 boxShadow: "0px 6px 14px rgba(15,23,42,0.06)", // soft shadow
@@ -58,8 +75,8 @@ export default function TaskList({tasks,taskMovedToDone,tasksDeleted}){
                 primary={el.task}
                 />
               <ListItemIcon sx={{minWidth:40}}>
-                  <IconButton onClick={()=>tasksDeleted(el.id)} aria-label="delete"><DeleteIcon /></IconButton>
-              </ListItemIcon>    
+                  <IconButton onClick={() => clickHandler(el.id)} aria-label="delete"><DeleteIcon /></IconButton>
+              </ListItemIcon>
           </ListItem>
           ))}
         </List>

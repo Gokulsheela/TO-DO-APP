@@ -3,7 +3,6 @@ const mongoose=require("mongoose");
 const cors=require ("cors");
 const tasks=require("./models/tasks.js");
 const app= express();
-const { v4: uuidv4 } = require('uuid');
 app.use(cors());
 app.use(express.json());
 
@@ -26,22 +25,32 @@ app.get("/todos", async (req,res)=>{
 });
 
 app.post("/todos", async (req,res)=>{
-    const newTodo= new tasks({task:req.body.text});
+    console.log(req.body,"req.body");
+    const newTodo= new tasks(req.body);
+    console.log(newTodo);
     await newTodo.save();
     res.json(newTodo);
 })
-app.patch("/todos",async(req,res)=>{
-    const {id}=req.body;
- const result=  await tasks.findOneAndUpdate(
-      {id},
-      [
-        { $set: { status: { $not: "$status" } } }
-      ],
-      {new:true});
-    // if (!result) return res.status(404).json({ message: "Task not found" });
-    res.json({ message: "Status toggled"})
- 
-})
+
+app.patch("/todos/:id", async (req,res) => {
+    console.log("patch");
+    const { id } = req.params;
+
+    const result = await tasks.findOneAndUpdate(
+        { id },
+        [
+            { $set: { status: { $not: "$status" } } }
+        ],
+        { new: true }
+    );
+
+    if (!result) return res.status(404).json({ message: "Task not found" });
+    
+    console.log(result, "result");
+    res.json(result);   
+});
+
+
 app.delete("/todos/:id", async(req,res)=>{
     const {id}= req.params; // reciving from url
     console.log(id);
@@ -56,6 +65,6 @@ app.delete("/todos/:id", async(req,res)=>{
 // .then(()=> console.log("date is saved"))
 // .catch((err)=>console.log(err));
 
-app.listen(3030,()=>{
+app.listen(3030,()=>{``
     console.log("server is listening on port 3030");
 });

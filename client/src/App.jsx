@@ -1,9 +1,20 @@
-import ToDoApps from './ToDoApps'
+import ToDoApps from './ToDoApps.jsx'
+import Todo from "./components/Todo.jsx"
+import AddForm from './components/AddForm.jsx';
+import { Provider } from "react-redux";
+import { store } from './app/store.js'
 function App() {
 
   return (
     <>
-    <ToDoApps/>
+    {/* <Provider store = { store }>
+        <Todo/>
+        <AddForm/>
+    </Provider> */}
+   <Provider store = { store }>
+      <ToDoApps/>
+   </Provider>
+  
     </>
   )
 }

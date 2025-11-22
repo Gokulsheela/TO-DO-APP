@@ -3,21 +3,29 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
+import { addTodoAsync } from './features/todo/todoSlice';
 
+import { useDispatch } from "react-redux";
+// import { addTodo } from "./features/todo/todoSlice";
 
 export default function TaskInput ({addTask}){
      let [text,setText]=useState(""); //text-field
+     const dispatch = useDispatch();
 
-     function updatetasksValue(event){
-        event.preventDefault();
-        setText(event.target.value);
-       
-     }
-    let addNewtasks=()=>{
-        console.log(text);
-       addTask(text);
+    // let addNewtasks=()=>{
+    //     console.log(text);
+    //    addTask(text);
+    //     setText("");
+    // }
+
+const addNewtasks = (evt) =>{
+        evt.preventDefault();
+        console.log(text,"text inpiut");
+        dispatch(addTodoAsync(text))
         setText("");
     }
+
+
     return (
         <Box sx={{ display: "flex", m:2,padding:2 ,gap:2 }}>
             <TextField 
